@@ -4,7 +4,7 @@ const { createError } = require('../utils/errors');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  throw createError.unauthorized();
+  res.send("Hello World");
 });
 
 module.exports = router;

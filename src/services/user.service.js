@@ -1,5 +1,4 @@
 const User = require('../database/models/user.model');
-const { createError } = require('../utils/errors');
 
 const createUser = async userData => {
   const user = new User();
@@ -33,10 +32,6 @@ const getUserById = async auth_id => {
       email: 1
     }
   );
-
-  if (!userRes) {
-    throw createError.notFound('User not found');
-  }
 
   return userRes;
 };

@@ -7,31 +7,30 @@
 var app = require("../src/app");
 var debug = require("debug")("online-scheduling-node:server");
 var http = require("http");
-
-/**
- * Get port from environment and store in Express.
- */
+const database = require("../src/database");
+const server = http.createServer(app);
 
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-/**
- * Create HTTP server.
- */
+start();
 
-var server = http.createServer(app);
+function start() {
+  /**
+   * Get port from environment and store in Express.
+   */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
+  try {
+    database.connection();
+    
+    server.listen(port);
+    server.on("error", onError);
+    server.on("listening", onListening);
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1);
+  }
+}
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -48,10 +47,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== "listen") {
@@ -74,10 +69,6 @@ function onError(error) {
       throw error;
   }
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
   var addr = server.address();

@@ -29,4 +29,30 @@ const errorHandler = fn => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-export { ApiError, setError, createError, errorHandler };
+const appErrorHandling = (err, req, res, next) => {
+  const statusCode = err.status || err.statusCode || 500;
+  const isProduction = process.env.NODE_ENV === 'production';
+  let response = {};
+
+  // In production, hide sensitive error details for 500 errors
+  if (isProduction && statusCode >= 500) {
+    response = {
+      message: 'Internal Server Error',
+      error: 'Internal Server Error',
+      statusCode: statusCode
+    };
+  } else {
+    // Development or client errors (4xx) - show detailed errors
+    const errorName = err.name || 'Internal Server Error';
+    response = {
+      message: err.message || 'Something went wrong',
+      error: errorName,
+      statusCode: statusCode
+    };
+  }
+
+  res.status(statusCode);
+  res.json(response);
+}
+
+module.exports = { ApiError, setError, createError, errorHandler, appErrorHandling };
