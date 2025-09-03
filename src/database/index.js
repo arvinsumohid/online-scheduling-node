@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
-require('./models/user.model');
+// sync indexes, instead of calling from model so that it will not warning in test
+// Jest did not exit one second after the test run has completed.
+const syncIndexes = async () => {
+  const User = require('./models/user.model');
+
+  User.syncIndexes().catch(error => console.error(error));
+};
 
 const connection = async () => {
   try {
@@ -20,4 +26,4 @@ const disconnect = async () => {
   }
 };
 
-module.exports = { connection, disconnect };
+module.exports = { connection, disconnect, syncIndexes };

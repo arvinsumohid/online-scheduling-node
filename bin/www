@@ -22,7 +22,7 @@ function start() {
 
   try {
     database.connection();
-    
+    database.syncIndexes();
     server.listen(port);
     server.on("error", onError);
     server.on("listening", onListening);

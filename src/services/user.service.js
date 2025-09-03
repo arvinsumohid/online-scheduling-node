@@ -1,27 +1,25 @@
-const User = require('../database/models/user.model');
+const userRepository = require('../database/repositories/user.repository');
+const { createError } = require('../utils/errors');
 
-const createUser = async userData => {
-  const user = new User();
-  user.set(userData);
-  const savedUser = await user.save();
+const createUser = async (userData) => {
+  const savedUser = await userRepository.create(userData);
   return savedUser;
 };
 
 const getUser = async (page = 1, limit = 10) => {
-  const users = await User.find()
-    .skip((page - 1) * limit)
-    .limit(limit);
+  const skip = (page - 1) * limit;
+  const users = await userRepository.find({}, {}, {}, skip, limit);
 
   return {
-    users,
+    users: users || [],
     page,
     limit,
-    total: await User.countDocuments()
+    total: await userRepository.countDocuments() || 0
   };
 };
 
-const getUserById = async auth_id => {
-  const userRes = await User.findOne(
+const getUserById = async (auth_id) => {
+  const userRes = await userRepository.findOne(
     { auth_id },
     {
       _id: 1,
@@ -32,6 +30,10 @@ const getUserById = async auth_id => {
       email: 1
     }
   );
+
+  if (!userRes) {
+    throw createError.notFound('User not found');
+  }
 
   return userRes;
 };

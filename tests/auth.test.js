@@ -2,6 +2,7 @@ const { GET_AUTH0_USER_RESULT, AUTH_DATA, AUTH0_USERINFO } = require("./mock-dat
 const { GET_USER_BY_ID_RESULT } = require('./mock-data/user');
 
 jest.mock("axios");
+jest.mock("../src/database/repositories/user.repository");
 jest.mock("../src/services/user.service", () => {
   return {
     getUserById: jest.fn(),
@@ -21,6 +22,7 @@ jest.mock("../src/services/auth.service", () => {
 const axios = require("axios");
 const userService = require("../src/services/user.service");
 const authService = require("../src/services/auth.service");
+const userRepository = require("../src/database/repositories/user.repository");
 
 describe("AuthService.auth", () => {
   beforeEach(() => {
@@ -29,7 +31,7 @@ describe("AuthService.auth", () => {
 
   it("create user if user not found", async () => {
     axios.get.mockResolvedValue(AUTH0_USERINFO);
-    jest.spyOn(userService, "getUserById").mockResolvedValue(null);
+    jest.spyOn(userRepository, "findOne").mockResolvedValue(null);
     jest.spyOn(userService, "createUser").mockResolvedValue(GET_USER_BY_ID_RESULT);
     jest.spyOn(authService, "getAuth0User").mockResolvedValue(GET_AUTH0_USER_RESULT);
     const result = await authService.auth(AUTH_DATA);
@@ -42,7 +44,7 @@ describe("AuthService.auth", () => {
   });
 
   it("should return success", async () => {
-    jest.spyOn(userService, "getUserById").mockResolvedValue(GET_USER_BY_ID_RESULT);
+    jest.spyOn(userRepository, "findOne").mockResolvedValue(GET_USER_BY_ID_RESULT);
 
     const result = await authService.auth(AUTH_DATA);
 

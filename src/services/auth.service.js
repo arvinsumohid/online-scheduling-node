@@ -1,5 +1,6 @@
 const axios = require('axios');
-const { createUser, getUserById } = require('./user.service');
+const { createUser } = require('./user.service');
+const userRepository = require('../database/repositories/user.repository');
 
 const auth = async (req) => {
   const authData = {
@@ -9,7 +10,7 @@ const auth = async (req) => {
   };
 
 
-  const user = await getUserById(req.auth.payload.sub);
+  const user = await userRepository.findOne({ auth_id: req.auth.payload.sub });
 
   if (!user) {
     const auth0User = await getAuth0User(req.auth.token);

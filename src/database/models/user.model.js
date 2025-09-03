@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema(
     },
     last_name: {
       type: String,
-      required: false
+      required: false,
+      default: ""
     },
     auth_id: {
       type: String,
@@ -40,9 +41,5 @@ const User = mongoose.model('User', userSchema).on('index', error => {
     console.error(error);
   }
 });
-
-User.syncIndexes()
-  .then()
-  .catch(error => console.error(error));
 
 module.exports = User;

@@ -1,12 +1,9 @@
 const userService = require('../services/user.service');
 const { createError } = require('../utils/errors');
 
-const getUserById = async id => {
-  if (!id) {
-    throw createError.badRequest('User id is required');
-  }
-
+const getUserById = async (id) => {
   const user = await userService.getUserById(id);
+
   return user;
 };
 
