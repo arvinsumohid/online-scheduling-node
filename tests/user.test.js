@@ -1,8 +1,8 @@
-jest.mock("../src/database/models/user.model");
-jest.mock("../src/database/repositories/user.repository");
+jest.mock("@src/database/models/user.model");
+jest.mock("@src/database/repositories/user.repository");
 
-const userRepository = require("../src/database/repositories/user.repository");
-const userService = require("../src/services/user.service");
+const userRepository = require("@src/database/repositories/user.repository");
+const userService = require("@src/services/user.service");
 const { USER_DATA, CREATE_USER_RESULT, GET_USER_BY_ID_RESULT } = require("./mock-data/user");
 
 describe("UserService.createUser", () => {
@@ -75,4 +75,29 @@ describe("UserService.getUser", () => {
     });
   });
 });
+
+describe("UserService.updateUser", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it("id not exist", async () => {
+    jest.spyOn(userRepository, "findOne").mockResolvedValue(null);
+
+    await expect(userService.updateUser(GET_USER_BY_ID_RESULT._id, {})).rejects.toMatchObject({
+      statusCode: 404,
+      name: 'Not Found',
+      message: 'User not found'
+    })  ;
+  });
+
+  it("should update a user", async () => {
+    jest.spyOn(userRepository, "findOne").mockResolvedValue(GET_USER_BY_ID_RESULT);
+    jest.spyOn(userRepository, "updateOne").mockResolvedValue(GET_USER_BY_ID_RESULT);
+
+    const result = await userService.updateUser(GET_USER_BY_ID_RESULT._id, {});
+    expect(result).toBeDefined();
+    expect(result).toEqual(GET_USER_BY_ID_RESULT);
+  });
+})
 

@@ -1,7 +1,7 @@
 const userRepository = require('../database/repositories/user.repository');
 const { createError } = require('../utils/errors');
 
-const createUser = async (userData) => {
+const createUser = async userData => {
   const savedUser = await userRepository.create(userData);
   return savedUser;
 };
@@ -14,11 +14,11 @@ const getUser = async (page = 1, limit = 10) => {
     users: users || [],
     page,
     limit,
-    total: await userRepository.countDocuments() || 0
+    total: (await userRepository.countDocuments()) || 0
   };
 };
 
-const getUserById = async (auth_id) => {
+const getUserById = async auth_id => {
   const userRes = await userRepository.findOne(
     { auth_id },
     {
@@ -38,4 +38,15 @@ const getUserById = async (auth_id) => {
   return userRes;
 };
 
-module.exports = { createUser, getUser, getUserById };
+const updateUser = async (id, userData) => {
+  const user = await userRepository.findOne({ _id: id });
+
+  if (!user) {
+    throw createError.notFound('User not found');
+  }
+
+  const userRes = await userRepository.updateOne({ _id: id }, { $set: userData });
+  return userRes;
+};
+
+module.exports = { createUser, getUser, getUserById, updateUser };

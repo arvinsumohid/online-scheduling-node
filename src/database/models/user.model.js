@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const ROLES = require('@src/constants/roles');
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -13,11 +13,17 @@ const userSchema = new mongoose.Schema(
     last_name: {
       type: String,
       required: false,
-      default: ""
+      default: ''
     },
     auth_id: {
       type: String,
       required: true
+    },
+    role: {
+      type: String,
+      enum: ROLES,
+      required: true,
+      default: ROLES.USER
     },
     email: {
       type: String,

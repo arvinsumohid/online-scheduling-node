@@ -2,6 +2,7 @@ const USER_DATA = {
     "name": "test",
     "first_name": "test",
     "last_name": "test",
+    "role": "USER",
     "auth_id": "sample-auth-id",
     "email": "sample@test.com"
 }

@@ -3,12 +3,13 @@
 /**
  * Module dependencies.
  */
-
+require('module-alias/register');
 var app = require("../src/app");
 var debug = require("debug")("online-scheduling-node:server");
 var http = require("http");
 const database = require("../src/database");
 const server = http.createServer(app);
+
 
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);

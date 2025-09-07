@@ -53,6 +53,6 @@ const appErrorHandling = (err, req, res, next) => {
 
   res.status(statusCode);
   res.json(response);
-}
+};
 
 module.exports = { ApiError, setError, createError, errorHandler, appErrorHandling };
