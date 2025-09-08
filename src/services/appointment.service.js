@@ -1,50 +1,55 @@
-const Appointment = require('@src/database/models/appointment.model');
-const { ApiError } = require('@src/utils/errors');
+const appointmentRepository = require('@src/database/repositories/appointment.repository');
+const { createError } = require('@src/utils/errors');
 
-const getAppointmentById = async id => {
-  const appointment = await Appointment.findById(id);
+const getAppointmentById = async (id) => {
+  const appointment = await appointmentRepository.findOne({ _id: id });
+  if (!appointment) {
+    throw createError.notFound('Appointment not found');
+  }
   return appointment;
 };
-const createAppointment = async appointmentData => {
+
+const createAppointment = async (appointmentData) => {
   // check if appointment is available
-  const appointment = await Appointment.findOne({
+  const appointment = await appointmentRepository.findOne({
     date: appointmentData.date,
     time: appointmentData.time,
     dentist: appointmentData.dentist
   });
   if (appointment) {
-    throw ApiError.badRequest('Appointment is not available');
+    throw createError.badRequest('Appointment is not available');
   }
 
-  const newAppointment = await Appointment.create(appointmentData);
+  const newAppointment = await appointmentRepository.create(appointmentData);
   return newAppointment;
 };
 const updateAppointmentStatus = async (id, appointmentData) => {
   // check if appointment is existing
-  const existingAppointment = await Appointment.findById(id);
+  const existingAppointment = await appointmentRepository.findOne({ _id: id });
   if (!existingAppointment) {
-    throw ApiError.notFound('Appointment not found');
+    throw createError.notFound('Appointment not found');
   }
-  const appointment = await Appointment.findByIdAndUpdate(id, appointmentData, { new: true, runValidators: true });
+
+  const appointment = await appointmentRepository.updateOne(id, appointmentData, { new: true, runValidators: true });
   return appointment;
 };
 const rescheduleAppointment = async (id, appointmentData) => {
   // check if appointment is existing
-  const existingAppointment = await Appointment.findById(id);
+  const existingAppointment = await appointmentRepository.findOne({ _id: id });
   if (!existingAppointment) {
-    throw ApiError.notFound('Appointment not found');
+    throw createError.notFound('Appointment not found');
   }
 
   // check if appointment is available
-  const appointmentCheck = await Appointment.findOne({
+  const appointmentCheck = await appointmentRepository.findOne({
     date: appointmentData.date,
     time: appointmentData.time,
     dentist: appointmentData.dentist
   });
   if (appointmentCheck) {
-    throw ApiError.badRequest('Appointment is not available');
+    throw createError.badRequest('Appointment is not available');
   }
-  const appointment = await Appointment.findByIdAndUpdate(id, appointmentData, { new: true, runValidators: true });
+  const appointment = await appointmentRepository.updateOne(id, appointmentData, { new: true, runValidators: true });
   return appointment;
 };
 

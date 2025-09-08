@@ -10,6 +10,7 @@ const {
   rescheduleAppointmentValidation
 } = require('@src/validations/appointment.validation');
 const { createAppointmentCheck } = require('@src/middleware/appointmentCheck');
+const { isUserPartOfAppointment } = require('@src/middleware/ownership');
 
 // GET appointments
 router.get(
@@ -62,6 +63,7 @@ router.put(
   '/:id/reschedule',
   rescheduleAppointmentValidation,
   checkJwt,
+  isUserPartOfAppointment,
   errorHandler(async function (req, res, next) {
     const appointment = await appointmentController.rescheduleAppointment(req.params.id, req.body);
     return res.status(200).json({ appointment });

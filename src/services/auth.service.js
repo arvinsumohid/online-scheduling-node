@@ -2,7 +2,7 @@ const axios = require('axios');
 const { createUser } = require('./user.service');
 const userRepository = require('../database/repositories/user.repository');
 
-const auth = async req => {
+const auth = async (req) => {
   const authData = {
     access_token: req.auth.token,
     refresh_token: req.auth.refresh_token,

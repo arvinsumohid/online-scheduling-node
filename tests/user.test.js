@@ -39,7 +39,7 @@ describe("UserService.getUserById", () => {
       statusCode: 404,
       name: 'Not Found',
       message: 'User not found'
-    })  ;
+    });
   });
 });
 
