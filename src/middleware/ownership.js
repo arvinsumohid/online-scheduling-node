@@ -36,6 +36,6 @@ const isUserPartOfAppointment = async (req, res, next) => {
   }
 
   next();
-}
+};
 
 module.exports = { userIsMe, isUserPartOfAppointment };

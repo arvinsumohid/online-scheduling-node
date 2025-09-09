@@ -1,7 +1,7 @@
 const appointmentRepository = require('@src/database/repositories/appointment.repository');
 const { createError } = require('@src/utils/errors');
 
-const getAppointmentById = async (id) => {
+const getAppointmentById = async id => {
   const appointment = await appointmentRepository.findOne({ _id: id });
   if (!appointment) {
     throw createError.notFound('Appointment not found');
@@ -9,7 +9,7 @@ const getAppointmentById = async (id) => {
   return appointment;
 };
 
-const createAppointment = async (appointmentData) => {
+const createAppointment = async appointmentData => {
   // check if appointment is available
   const appointment = await appointmentRepository.findOne({
     date: appointmentData.date,
