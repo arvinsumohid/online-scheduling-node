@@ -1,0 +1,18 @@
+services:
+  # Development environment
+  backend-dev:
+    build:
+      context: .
+      target: development
+    container_name: online-scheduling-backend-dev
+    ports:
+      - "3004:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    command: sh -c "npm install && npm run dev"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
